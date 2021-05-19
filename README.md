@@ -44,3 +44,13 @@
 
   * Write test cases in the tests/ folder
   * Run php bin/phpunit
+
+#####################################################
+
+ php bin/console assets:install
+
+ php bin/console make:controller
+ php bin/console make:entity
+ php bin/console make:migration
+ php bin/console doctrine:migrations:migrate
+
