@@ -39,10 +39,41 @@ class Product
      */
     private $pictures;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=ProductDetail::class, inversedBy="products")
+     */
+    private $details;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $price;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $price_old;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Stock::class, mappedBy="product")
+     */
+    private $stocks;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $descr;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $color;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->pictures = new ArrayCollection();
+        $this->stocks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,5 +157,100 @@ class Product
         }
 
         return $this;
+    }
+
+    public function getDetails(): ?ProductDetail
+    {
+        return $this->details;
+    }
+
+    public function setDetails(?ProductDetail $details): self
+    {
+        $this->details = $details;
+
+        return $this;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): self
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function getPriceOld(): ?int
+    {
+        return $this->price_old;
+    }
+
+    public function setPriceOld(?int $price_old): self
+    {
+        $this->price_old = $price_old;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Stock[]
+     */
+    public function getStocks(): Collection
+    {
+        return $this->stocks;
+    }
+
+    public function addStock(Stock $stock): self
+    {
+        if (!$this->stocks->contains($stock)) {
+            $this->stocks[] = $stock;
+            $stock->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Stock $stock): self
+    {
+        if ($this->stocks->removeElement($stock)) {
+            // set the owning side to null (unless already changed)
+            if ($stock->getProduct() === $this) {
+                $stock->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDescr(): ?string
+    {
+        return $this->descr;
+    }
+
+    public function setDescr(string $descr): self
+    {
+        $this->descr = $descr;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): self
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

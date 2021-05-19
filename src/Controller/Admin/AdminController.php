@@ -3,6 +3,10 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
+use App\Entity\Product;
+use App\Entity\ProductDetail;
+use App\Entity\Size;
+use App\Entity\Stock;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -33,9 +37,14 @@ class AdminController extends AbstractDashboardController
 
         return [
             MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
-
             MenuItem::section('Products'),
             MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class),
+            MenuItem::linkToCrud('Products', 'fa fa-tags', Product::class),
+            #MenuItem::linkToCrud('Product details', 'fa fa-tags', ProductDetail::class),
+            MenuItem::linkToCrud('Stock', 'fa fa-tags', Stock::class),
+
+            MenuItem::section('Parameters'),
+            MenuItem::linkToCrud('Sizes', 'fa fa-tags', Size::class),
         ];
     }
 }

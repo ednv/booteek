@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoryRepository;
+use App\Repository\ProductDetailRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=CategoryRepository::class)
+ * @ORM\Entity(repositoryClass=ProductDetailRepository::class)
  */
-class Category
+class ProductDetail
 {
     /**
      * @ORM\Id
@@ -22,20 +22,15 @@ class Category
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private $color;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
-    private $slug;
+    private $descr;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $position;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Product::class, mappedBy="categories")
+     * @ORM\OneToMany(targetEntity=Product::class, mappedBy="details")
      */
     private $products;
 
@@ -49,38 +44,26 @@ class Category
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getColor(): ?string
     {
-        return $this->name;
+        return $this->color;
     }
 
-    public function setName(string $name): self
+    public function setColor(string $color): self
     {
-        $this->name = $name;
+        $this->color = $color;
 
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getDescr(): ?string
     {
-        return $this->slug;
+        return $this->descr;
     }
 
-    public function setSlug(string $slug): self
+    public function setDescr(string $descr): self
     {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
-    public function getPosition(): ?int
-    {
-        return $this->position;
-    }
-
-    public function setPosition(int $position): self
-    {
-        $this->position = $position;
+        $this->descr = $descr;
 
         return $this;
     }
@@ -97,7 +80,7 @@ class Category
     {
         if (!$this->products->contains($product)) {
             $this->products[] = $product;
-            $product->addCategory($this);
+            $product->setDetails($this);
         }
 
         return $this;
@@ -106,14 +89,12 @@ class Category
     public function removeProduct(Product $product): self
     {
         if ($this->products->removeElement($product)) {
-            $product->removeCategory($this);
+            // set the owning side to null (unless already changed)
+            if ($product->getDetails() === $this) {
+                $product->setDetails(null);
+            }
         }
 
         return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->getName();
     }
 }
